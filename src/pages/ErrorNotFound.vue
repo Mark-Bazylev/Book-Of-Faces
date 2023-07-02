@@ -14,7 +14,7 @@
         color="white"
         text-color="blue"
         unelevated
-        to="/"
+        to='/home'
         label="Go Home"
         no-caps
       />
@@ -23,5 +23,5 @@
 </template>
 
 <script setup lang="ts">
-
+// const homePage=BASE_URL
 </script>

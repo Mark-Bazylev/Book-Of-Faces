@@ -22,6 +22,10 @@ export const useAuthStore = defineStore('auth', () => {
       tokenData.value = null;
     }
   }
+  function removeAuthData() {
+     authService.setAuthToken(null);
+     tokenData.value=null;
+  }
   function isLoggedIn() {
     return !!tokenData.value && tokenData.value.exp * 1000 > Date.now();
   }
@@ -38,5 +42,5 @@ export const useAuthStore = defineStore('auth', () => {
     setAuthData();
   }
 
-  return { login, register, tokenData, isLoggedIn };
+  return { login, register, tokenData, isLoggedIn ,removeAuthData};
 });

@@ -1,4 +1,4 @@
-export function getDayOfWeek(date: any) {
+export function getDayOfWeek(date: string) {
   const dayOfWeek = new Date(date).getDay();
   return isNaN(dayOfWeek)
     ? null

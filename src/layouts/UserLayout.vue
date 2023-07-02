@@ -12,6 +12,9 @@
         />
 
         <q-toolbar-title> Book Of Faces </q-toolbar-title>
+
+          <q-btn flat @click="signOut" to="/auth">Sign Out</q-btn>
+
       </q-toolbar>
     </q-header>
 
@@ -46,26 +49,30 @@ import { useAuthStore } from 'stores/auth-store';
 import { storeToRefs } from 'pinia';
 
 export default defineComponent({
-  async beforeRouteEnter(to, from) {
+  async beforeRouteEnter() {
+
     const { getAccount } = useAccountStore();
     const { tokenData } = storeToRefs(useAuthStore());
     try {
-      await getAccount({
-        id: tokenData.value?.userId || '',
-      });
+      await getAccount(tokenData.value?.userId || '');
     } catch (error) {
       console.log('Failed to get account', error);
     }
   },
 });
 </script>
+
 <script setup lang="ts">
 import { ref } from 'vue';
 import DrawerList from 'components/DrawerList.vue';
-
+const {removeAuthData}= useAuthStore()
 const miniState = ref(false);
 const leftDrawerOpen = ref(false);
 
+function signOut(){
+  removeAuthData()
+
+}
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }

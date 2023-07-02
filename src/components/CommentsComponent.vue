@@ -1,50 +1,53 @@
 <template>
   <CommentInput :postId="props.postId" />
-  <q-card class="q-ma-md">
+  <div class="q-ma-md">
     <q-list :key="comment" v-for="comment in sortedComments">
-      <q-item clickable v-ripple>
-        <q-item-section side>
-          <q-avatar size="64px">
+      <q-item class="q-mb-md">
+        <q-item-section side class="self-start">
+          <q-avatar size="40px">
             <img :src="accountsMap[comment?.createdBy]?.avatarUrl" />
           </q-avatar>
         </q-item-section>
+
         <q-item-section>
-          <q-item-label>
-            {{ accountsMap[comment?.createdBy]?.name || 'NO FKIN NAME' }}
+          <q-item-label class="row justify-between">
+            <span>
+              {{ accountsMap[comment?.createdBy]?.name }}
+            </span>
           </q-item-label>
-          <q-item-label caption>
-            {{ getDayOfWeek(comment.createdAt) }}
+          <q-item-label class="comment-box">
+            {{ comment?.content }}
           </q-item-label>
         </q-item-section>
-      </q-item>
-      <!--          get a cool ass word limiter with show more/less option-->
-      <q-item> {{ comment?.content }} </q-item>
-      <q-item>
-        <q-item-section side>
-          <!--          <q-btn @click="setLikeComment(comment)" icon="thumb_up" round flat size="12px">{{comment.likes.length}}</q-btn>-->
-          <q-btn
-            v-if="!comment.likes.includes(<string>tokenData?.userId)"
-            @click="setLikeComment(comment)"
-            icon="thumb_up"
-            round
-            flat
-            size="12px"
-            >{{ comment.likes.length }}</q-btn
-          >
-          <q-btn
-            v-else
-            @click="setUnlikeComment(comment)"
-            icon="thumb_up"
-            round
-            flat
-            size="12px"
-            color="secondary"
-            >{{ comment.likes.length }}</q-btn
-          >
+        <q-item-section side top>
+          <q-item-label>
+            {{ getDayOfWeek(comment.createdAt) }}
+          </q-item-label>
+          <q-item-label>
+            <q-btn
+              v-if="!comment.likes.includes(<string>tokenData?.userId)"
+              @click="setLikeComment(comment)"
+              icon="thumb_up"
+              round
+              flat
+              size="12px"
+              >{{ comment.likes.length }}</q-btn
+            >
+            <q-btn
+              v-else
+              @click="setUnlikeComment(comment)"
+              icon="thumb_up"
+              round
+              flat
+              size="12px"
+              color="secondary"
+              >{{ comment.likes.length }}</q-btn
+            >
+          </q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
-  </q-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -66,7 +69,9 @@ const { tokenData } = storeToRefs(authStore);
 onMounted(async () => {
   try {
     const res = await getPostComments(props.postId);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 async function setLikeComment(comment: any) {
@@ -86,4 +91,8 @@ async function setUnlikeComment(comment: any) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.comment-box {
+  word-break: break-word;
+}
+</style>

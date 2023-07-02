@@ -21,7 +21,7 @@ import ProfileThumbnail from 'components/profile/ProfileThumbnail.vue';
 import ProfileInput from 'components/profile/ProfileInput.vue';
 import ProfilePosts from 'components/profile/ProfilePosts.vue';
 import { useAccountStore } from 'stores/account-store';
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { usePostsStore } from 'stores/posts-store';
 import { storeToRefs } from 'pinia';
 

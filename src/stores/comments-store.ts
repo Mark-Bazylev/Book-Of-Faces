@@ -4,9 +4,9 @@ import { Comment } from 'src/services/http-services/comments-service/models';
 import { commentsService } from 'src/services/http-services/comments-service/comments.service';
 import { AccountsMap } from 'src/services/http-services/friends-service/models';
 import { usePostsStore } from 'stores/posts-store';
-import {useAccountStore} from "stores/account-store";
+import { useAccountStore } from 'stores/account-store';
 const { posts } = storeToRefs(usePostsStore());
-const {getAccount}=useAccountStore()
+const { getAccount } = useAccountStore();
 export const useCommentsStore = defineStore('comments', () => {
   const comments = ref<Comment[]>([]);
   const accountsMap = ref<AccountsMap>({});
@@ -28,12 +28,9 @@ export const useCommentsStore = defineStore('comments', () => {
   async function createComment(content: string, commentedIn: string) {
     const res = await commentsService.createComment(content, commentedIn);
     comments.value.push(res.data);
-    const res2=await getAccount(res.data.createdBy)
-    accountsMap.value[res.data.createdBy]=res2.data;
-    const post = posts.value.find(post => post._id === commentedIn);
-    console.log('this is posts:',posts.value)
-    console.log('commented in: ',commentedIn)
-    console.log('this is a post man:',post)
+    const res2 = await getAccount(res.data.createdBy);
+    accountsMap.value[res.data.createdBy] = res2.data;
+    const post = posts.value.find((post) => post._id === commentedIn);
     if (post) post.commentsLength++;
 
     console.log(posts);

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { httpService } from 'src/services/http-services/http.service';
 import { ref } from 'vue';
 import { Account } from 'src/services/http-services/accounts-service/models';
 import { accountsService } from 'src/services/http-services/accounts-service/accounts.service';
@@ -9,7 +8,7 @@ export const useAccountStore = defineStore('account', () => {
   async function getAllAccounts() {
     return await accountsService.getAllAccounts();
   }
-  async function getAccount(id:string) {
+  async function getAccount(id: string) {
     const res = await accountsService.getAccount(id);
     currentAccount.value = res.data;
     return res;
