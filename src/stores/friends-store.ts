@@ -1,21 +1,19 @@
 import { defineStore } from 'pinia';
-import { friendsService } from 'src/services/http-services/friends-service/friends.service';
-import {computed, ref} from "vue";
-import {AccountsMap, FriendsData} from "src/services/http-services/friends-service/models";
-import {Account} from "src/services/http-services/accounts-service/models";
-
+import { friendsService } from 'src/services/api-services/friends-service/friends.service';
+import { ref } from 'vue';
+import { FriendsData } from 'src/services/api-services/friends-service/models';
+import { useAccountStore } from 'stores/account-store';
+const { addAccounts } = useAccountStore();
 export const useFriendsStore = defineStore('friends', () => {
-  const friendsData=ref<FriendsData|null>(null)
-  const accountsMap=ref<AccountsMap|null>({})
-  const potentialFriends=ref<[string]|null>(null)
-  const getFriendsData=async()=>{
+  const friendsData = ref<FriendsData | null>(null);
+  const potentialFriends = ref<string[] | null>(null);
+  const getFriendsData = async () => {
     const res = await friendsService.getFriendsData();
-
-    friendsData.value=res.data.friendsData;
-    potentialFriends.value=res.data.potentialFriends
-    accountsMap.value=res.data.accountsMap;
+    friendsData.value = res.data.friendsData;
+    potentialFriends.value = res.data.potentialFriends;
+    addAccounts(res.data.accountsMap);
     return res.data;
-  }
+  };
   async function sendFriendRequest(userId: string) {
     return await friendsService.sendFriendRequest(userId);
   }
@@ -23,5 +21,12 @@ export const useFriendsStore = defineStore('friends', () => {
     return await friendsService.acceptFriendRequest(userId);
   }
 
-  return { friendsData,accountsMap,potentialFriends,getFriendsData, sendFriendRequest, acceptFriendRequest };
+  return {
+    friendsData,
+
+    potentialFriends,
+    getFriendsData,
+    sendFriendRequest,
+    acceptFriendRequest,
+  };
 });

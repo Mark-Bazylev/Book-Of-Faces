@@ -16,15 +16,13 @@
 <script setup>
 import { ref } from 'vue';
 import { usePostsStore } from 'stores/posts-store';
-import { storeToRefs } from 'pinia';
-const postsStore = usePostsStore();
-const { posts } = storeToRefs(postsStore);
-const { createPost } = postsStore;
+
+const { createPost } = usePostsStore();
 const userInput = ref('');
 const submitPost = async () => {
   try {
     await createPost(userInput.value);
-    userInput.value='';
+    userInput.value = '';
   } catch (error) {
     console.log(error);
   }

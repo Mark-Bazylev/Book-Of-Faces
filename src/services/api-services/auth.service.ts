@@ -1,4 +1,4 @@
-import {httpService} from "src/services/http-services/http.service";
+import {httpService} from "src/services/api-services/http.service";
 
 
 export interface authTokenData{
@@ -25,6 +25,18 @@ class AuthService{
     }
     httpService.setAuthToken(token)
   }
+  async getUserEmail(){
+    const res=await httpService.get('auth/email')
+    return res
+  }
+  async updateUserEmail(newEmail:string){
+    const res=await httpService.patch('auth/email', {newEmail})
+    return res
+  }
+  async changePassword(data:any){
+    const res= await httpService.patch('auth/password',data)
+    return res
+  }
   async login(data:any) {
     const res = await httpService.post('auth/login', data);
     this.setAuthToken(res.data.token);
@@ -32,7 +44,13 @@ class AuthService{
   }
   async register(data:any) {
     const res = await httpService.post('auth/register', data);
+    console.log(res)
     this.setAuthToken(res.data.token);
+    return res;
+  }
+
+  async deleteAccount(){
+    const res=await httpService.delete('auth/delete')
     return res;
   }
 }

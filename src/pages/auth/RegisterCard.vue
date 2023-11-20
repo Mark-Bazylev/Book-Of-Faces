@@ -1,6 +1,14 @@
 <template>
   <q-page class="column justify-center">
     <q-card>
+      <q-banner class="bg-primary text-white">
+        <template v-slot:avatar>
+          <q-icon name="menu_book" />
+        </template>
+        <template v-slot:default>
+          <h5 style="margin: 0">Book Of Faces</h5>
+        </template>
+      </q-banner>
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md q-pa-md">
         <q-input
           filled
@@ -101,9 +109,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { RouteNames } from '../../router/routes';
+import { RouteNames } from 'src/router/routes';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'stores/auth-store';
+import {emailRegEx} from "src/utils/regex";
 
 const { register } = useAuthStore();
 
@@ -114,8 +123,6 @@ const coverImgUrl = ref('');
 const avatarImgUrl = ref('');
 const errorMsg = ref('');
 const isPasswordVisible = ref(false);
-const emailRegEx =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const router = useRouter();
 const onReset = () => {
   name.value = '';
@@ -139,7 +146,7 @@ const onSubmit = async () => {
     errorMsg.value = '';
   } catch (error: any) {
     console.log(error);
-    errorMsg.value = error.response.data.msg;
+    errorMsg.value = error;
   }
 };
 </script>

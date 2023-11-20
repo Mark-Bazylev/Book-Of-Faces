@@ -1,4 +1,4 @@
-import { Account } from 'src/services/http-services/accounts-service/models';
+import { Account } from 'src/services/api-services/accounts-service/models';
 
 export interface FriendsData {
   sentRequests: [string];

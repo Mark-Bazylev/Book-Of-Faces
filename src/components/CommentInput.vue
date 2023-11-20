@@ -1,13 +1,21 @@
 <template>
   <q-list>
     <q-item>
-      <q-item-section side>
-        <q-avatar size="64px">
-          <img :src="currentAccount?.avatarUrl" />
+      <q-item-section avatar>
+        <q-avatar size="56px">
+          <img :src="currentAccount?.avatarUrl" alt=""/>
         </q-avatar>
       </q-item-section>
       <q-item-section>
-        <q-input type="text" v-model="commentInput" />
+        <q-input
+          v-model="commentInput"
+          rounded
+          outlined
+          class="input"
+          autogrow
+          placeholder="Comment here"
+          type="text"
+        />
       </q-item-section>
       <q-item-section side>
         <q-btn @click="sendComment">Send</q-btn>
@@ -19,7 +27,7 @@
 <script setup lang="ts">
 import { useAccountStore } from 'stores/account-store';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useCommentsStore } from 'stores/comments-store';
 
 const accountStore = useAccountStore();

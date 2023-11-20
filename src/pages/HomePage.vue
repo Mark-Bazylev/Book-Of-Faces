@@ -1,39 +1,51 @@
 <template>
-  <div>
-    <h1>This is Home Page</h1>
-  </div>
-  <div class="column justify-center">
-    <PostsComponent :posts="sortedFriendsPosts" :accountsMap="accountsMap" />
-  </div>
+  <q-page class="q-pa-md q-gutter-md">
+    <q-card class="relative-position card-example" flat bordered>
+      <q-card-section>
+        <template v-if="showPosts">
+          <div v-if="sortedFriendsPosts.length != 0">
+            <PostsComponent
+              :posts="sortedFriendsPosts"
+              :accountsMap="accountsMap"
+            />
+          </div>
+          <div v-else class="posts-container">
+            <h4>No Posts to show</h4>
+          </div>
+        </template>
+        <div v-else>
+          <PostsSkeleton />
+        </div>
+      </q-card-section>
+    </q-card>
+  </q-page>
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePostsStore } from 'stores/posts-store';
 import { useFriendsStore } from 'stores/friends-store';
-import { Loading } from 'quasar';
 const postsStore = usePostsStore();
 const friendsStore = useFriendsStore();
 const { getPosts, getFriendsPosts } = postsStore;
-const { posts } = storeToRefs(postsStore);
 const { getFriendsData } = friendsStore;
 const friendsPosts = ref([]);
 const sortedFriendsPosts = computed(() => friendsPosts.value.slice().reverse());
+const showPosts = ref(false);
 async function getData() {
   await getPosts();
-  const res = await getFriendsPosts();
-  friendsPosts.value = res;
-  const res2 = await getFriendsData();
-  console.log(res2);
+  friendsPosts.value = await getFriendsPosts();
+  await getFriendsData();
 }
 export default defineComponent({
   async beforeRouteEnter() {
     try {
-      Loading.show();
+      showPosts.value = false;
       await getData();
-    } catch (e) {
+    } catch (error) {
+      console.log('failed to load Home Page', error);
     } finally {
-      Loading.hide();
+      showPosts.value = true;
     }
   },
 });
@@ -41,10 +53,20 @@ export default defineComponent({
 <script setup lang="ts">
 import { usePostsStore } from 'stores/posts-store';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useFriendsStore } from 'stores/friends-store';
-import Posts from 'components/PostsComponent.vue';
-import PostsComponent from "components/PostsComponent.vue";
+import PostsComponent from 'components/PostsComponent.vue';
+import PostsSkeleton from 'components/PostsSkeleton.vue';
+import { useAccountStore } from 'stores/account-store';
 
-const { accountsMap, friendsData } = storeToRefs(friendsStore);
+const { accountsMap } = storeToRefs(useAccountStore());
 </script>
+
+<style scoped>
+.posts-container {
+  display: flex;
+  width: 100vh;
+  height: 100vh;
+  justify-content: center;
+}
+</style>

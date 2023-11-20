@@ -1,15 +1,14 @@
 import { defineStore, storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import { Comment } from 'src/services/http-services/comments-service/models';
-import { commentsService } from 'src/services/http-services/comments-service/comments.service';
-import { AccountsMap } from 'src/services/http-services/friends-service/models';
+import { Comment } from 'src/services/api-services/comments-service/models';
+import { commentsService } from 'src/services/api-services/comments-service/comments.service';
 import { usePostsStore } from 'stores/posts-store';
-import {useAccountStore} from "stores/account-store";
+import { useAccountStore } from 'stores/account-store';
 const { posts } = storeToRefs(usePostsStore());
-const {getAccount}=useAccountStore()
+
+const { addAccounts, getMyAccount } = useAccountStore();
 export const useCommentsStore = defineStore('comments', () => {
   const comments = ref<Comment[]>([]);
-  const accountsMap = ref<AccountsMap>({});
   async function getMyComments() {
     const res = await commentsService.getMyComments();
     return res.data;
@@ -17,7 +16,7 @@ export const useCommentsStore = defineStore('comments', () => {
   async function getPostComments(postId: string) {
     const res = await commentsService.getPostComments(postId);
     comments.value = res.data.comments;
-    accountsMap.value = res.data.accountsMap;
+    addAccounts(res.data.accountsMap);
     return res.data;
   }
 
@@ -26,19 +25,16 @@ export const useCommentsStore = defineStore('comments', () => {
     return res.data;
   }
   async function createComment(content: string, commentedIn: string) {
-    const res = await commentsService.createComment(content, commentedIn);
-    comments.value.push(res.data);
-    const res2=await getAccount(res.data.createdBy)
-    accountsMap.value[res.data.createdBy]=res2.data;
-    const post = posts.value.find(post => post._id === commentedIn);
-    console.log('this is posts:',posts.value)
-    console.log('commented in: ',commentedIn)
-    console.log('this is a post man:',post)
+    const newComment = await commentsService.createComment(
+      content,
+      commentedIn
+    );
+    comments.value.push(newComment.data);
+    const newAccount = await getMyAccount();
+    addAccounts({ [newComment.data.createdBy]: newAccount });
+    const post = posts.value.find((post) => post._id === commentedIn);
     if (post) post.commentsLength++;
-
-    console.log(posts);
-    console.log(comments.value);
-    return res.data;
+    return newComment.data;
   }
   async function likeComment(commentId: string) {
     const res = await commentsService.likeComment(commentId);
@@ -56,7 +52,6 @@ export const useCommentsStore = defineStore('comments', () => {
 
   return {
     comments,
-    accountsMap,
     getMyComments,
     getPostComments,
     getComment,

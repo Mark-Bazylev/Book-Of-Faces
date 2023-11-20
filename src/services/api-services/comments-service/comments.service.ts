@@ -1,4 +1,4 @@
-import { httpService } from 'src/services/http-services/http.service';
+import { httpService } from 'src/services/api-services/http.service';
 
 class CommentsService {
   getMyComments() {
@@ -7,11 +7,11 @@ class CommentsService {
   getComment(commentId: string) {
     return httpService.get(`comments/${commentId}`);
   }
-  getPostComments(postId:string) {
+  getPostComments(postId: string) {
     return httpService.get(`comments/post/${postId}`);
   }
-  createComment(content: string,commentedIn:string) {
-    return httpService.post('comments', { content,commentedIn });
+  createComment(content: string, commentedIn: string) {
+    return httpService.post('comments', { content, commentedIn });
   }
   likeComment(commentId: string) {
     return httpService.post('comments/likes/like', { commentId });

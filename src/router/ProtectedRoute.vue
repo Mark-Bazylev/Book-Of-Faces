@@ -9,8 +9,8 @@ function routeUpdate() {
   }
 }
 export default defineComponent({
-  beforeRouteEnter:routeUpdate,
-  beforeRouteUpdate:routeUpdate,
+  beforeRouteEnter: routeUpdate,
+  beforeRouteUpdate: routeUpdate,
 });
 </script>
 

@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia';
-import { httpService } from 'src/services/http-services/http.service';
-import { computed, ref } from 'vue';
-import { postsService } from 'src/services/http-services/posts-service/posts.service';
-import {Post} from "src/services/http-services/posts-service/models";
+import { ref } from 'vue';
+import { postsService } from 'src/services/api-services/posts-service/posts.service';
+import { Post } from 'src/services/api-services/posts-service/models';
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref<Post[]>([]);
   async function getFriendsPosts() {
     const res = await postsService.getFriendsPosts();
-    posts.value=res.data
+    posts.value = res.data;
     return res.data;
   }
 
@@ -17,39 +16,38 @@ export const usePostsStore = defineStore('posts', () => {
     posts.value = res.data.posts;
     return res.data.posts;
   }
+  async function getUserPosts(userId: string) {
+    const res = await postsService.getUserPosts(userId);
+    posts.value = res.data.posts;
+    return res.data.posts;
+  }
   async function getPost(postId: string) {
-    const res = await postsService.getPost(postId);
+    await postsService.getPost(postId);
   }
 
   async function createPost(content: string) {
     const res = await postsService.createPost(content);
     posts.value?.push(res.data);
-    console.log(posts.value);
   }
 
   async function likePost(postId: string) {
     console.log(postId);
-    const res = await postsService.likePost(postId);
-    console.log(res);
-    return res;
+    return await postsService.likePost(postId);
   }
 
   async function unlikePost(postId: string) {
     console.log(postId);
-    const res = await postsService.unlikePost(postId);
-    console.log(res);
-    return res;
+    return await postsService.unlikePost(postId);
   }
   async function getLikes(id: string) {
-    const res = await postsService.getLikes(id);
-    console.log(res);
-    return res;
+    return await postsService.getLikes(id);
   }
   return {
     posts,
     getPosts,
     getPost,
     getFriendsPosts,
+    getUserPosts,
     createPost,
     likePost,
     unlikePost,

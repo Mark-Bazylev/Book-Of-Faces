@@ -9,14 +9,13 @@
     />
 
     <q-avatar size="128px" class="profile-avatar">
-      <img :src="avatarUrl" />
+      <img :src="avatarUrl" alt="" />
     </q-avatar>
-
   </div>
-<h3 class="row justify-center">{{name}}</h3>
+  <h3 class="row justify-center">{{ name }}</h3>
 </template>
 <script setup lang="ts">
-const props = defineProps(['coverUrl', 'avatarUrl', 'name']);
+defineProps(['coverUrl', 'avatarUrl', 'name']);
 </script>
 
 <style scoped>
